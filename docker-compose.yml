@@ -1,23 +1,42 @@
-version: "3.9"
+version: '3.9'
 
 services:
   # mysqldatabase:
   # client:
   server:
     # set container name
-    container_name: ${PROJECT_NAME}_${SERVICE_SERVER_NAME}
+    container_name: ${PROJECT_NAME}_${SERVER_SERVICE_NAME}
     #set environment
     environment:
       NODE_ENV: ${APPLICATION_ENV}
     # The location of dockerfile to build this service
-    build: ${BUILD_LOCATION}     
-    # Command to run once the Dockerfile completes building    
-    command: ${NODE_COMMAND}
+    build: ${SERVER_BUILD_LOCATION}
+    # Command to run once the Dockerfile completes building
+    command: ${SERVER_NODE_COMMAND}
     # Volumes, mounting our files to parts of the container
     volumes:
-      - ${BUILD_LOCATION}:${WORK_LOCATION}
+      - ${SERVER_BUILD_LOCATION}:${SERVER_WORK_LOCATION}
+    #configuration file
+    env_file: ${SERVER_ENV_LOCATION}
     # Ports to map, mapping our port 8080, to the port 8080 on the container
-    env_file: ${ENV_SERVER_LOCATION}
-    ports: 
-      - ${DOCKER_PORT}:${DOCKER_PORT}
-        
+    ports:
+      - ${SERVER_DOCKER_PORT}:${SERVER_DOCKER_PORT}
+
+  client:
+    # set container name
+    container_name: ${CLIENT_SERVICE_NAME}
+    #set environment
+    environment:
+      NODE_ENV: ${APPLICATION_ENV}
+    # The location of dockerfile to build this service
+    build: ${CLIENT_BUILD_LOCATION}
+    # Command to run once the Dockerfile completes building
+    command: ${CLIENT_NODE_COMMAND}
+    # Volumes, mounting our files to parts of the container
+    volumes:
+      - ${CLIENT_BUILD_LOCATION}:${CLIENT_WORK_LOCATION}
+    #configuration file
+    env_file: ${CLIENT_ENV_LOCATION}
+    # Ports to map, mapping our port 3000, to the port 3000 on the container
+    ports:
+      - ${CLIENT_DOCKER_PORT}:${CLIENT_DOCKER_PORT}
